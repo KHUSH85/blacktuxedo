@@ -89,7 +89,7 @@ export function DestinationEntryScreen({ onSetFare }: DestinationEntryScreenProp
               <div className="flex items-start gap-4">
                 <div className="w-3 h-3 rounded-full bg-green-500 mt-2 flex-shrink-0 status-online shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
                 <div className="flex-1">
-                  <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Pickup origin</p>
+                  <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Pickup Location</p>
                   <p className="text-white font-bold text-sm">123 Main Street, Downtown</p>
                 </div>
               </div>
@@ -162,7 +162,7 @@ export function DestinationEntryScreen({ onSetFare }: DestinationEntryScreenProp
                 <div className="flex items-start gap-4">
                   <div className="w-2.5 h-2.5 rounded-full bg-green-500 mt-1.5 flex-shrink-0 shadow-[0_0_8px_rgba(34,197,94,0.4)]" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-0.5">Pickup Origin</p>
+                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-0.5">Pickup Location</p>
                     <p className="text-sm font-bold text-white uppercase tracking-tight">123 Main Street, Downtown</p>
                   </div>
                 </div>
@@ -170,7 +170,7 @@ export function DestinationEntryScreen({ onSetFare }: DestinationEntryScreenProp
                 <div className="flex items-start gap-4">
                   <div className="w-2.5 h-2.5 rounded-full bg-red-500 mt-1.5 flex-shrink-0 shadow-[0_0_8px_rgba(239,68,68,0.4)]" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-0.5">Dropoff Target</p>
+                    <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-0.5">Drop-off Location</p>
                     <p className="text-sm font-black text-white italic uppercase tracking-tight">{destination}</p>
                   </div>
                 </div>
@@ -190,19 +190,19 @@ export function DestinationEntryScreen({ onSetFare }: DestinationEntryScreenProp
             
             {/* Pricing Breakdown */}
             <GlassCard variant="strong" className="border-[#D4AF37]/50 gold-glow">
-              <h3 className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.3em] mb-6 italic text-center">Dispatch Rate Quote</h3>
+              <h3 className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.3em] mb-6 italic text-center">Trip Details</h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between py-2 px-2 border-b border-white/5">
-                  <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Base Protocol Fee</span>
-                  <span className="text-xs font-black text-white italic">${quote.baseFare.toFixed(2)}</span>
+                  <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Protocol Item</span>
+                  <span className="text-xs font-black text-white italic">&nbsp;</span>
                 </div>
                 <div className="flex items-center justify-between py-2 px-2 border-b border-white/5">
-                  <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Mileage ({quote.distance})</span>
-                  <span className="text-xs font-black text-white italic">${(parseFloat(quote.distance) * quote.perMile).toFixed(2)}</span>
+                  <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Distance ({quote.distance})</span>
+                  <span className="text-xs font-black text-white italic">&nbsp;</span>
                 </div>
                 <div className="flex items-center justify-between py-8 border-t border-[#D4AF37]/30 bg-gradient-to-r from-[#D4AF37]/10 to-transparent -mx-6 px-8 rounded-b-2xl">
-                  <span className="text-lg font-black text-[#D4AF37] uppercase tracking-tighter italic">Total Collection</span>
-                  <span className="text-4xl font-black text-[#D4AF37] italic tracking-tighter">${quote.total.toFixed(2)}</span>
+                  <span className="text-lg font-black text-[#D4AF37] uppercase tracking-tighter italic">Trip Summary</span>
+                  <span className="text-4xl font-black text-[#D4AF37] italic tracking-tighter">&nbsp;</span>
                 </div>
               </div>
             </GlassCard>
@@ -231,7 +231,7 @@ export function DestinationEntryScreen({ onSetFare }: DestinationEntryScreenProp
                     exit={{ opacity: 0, scale: 0.95 }}
                   >
                     <p className="text-[10px] font-black text-green-400 uppercase tracking-widest">
-                      Return Change: <span className="text-2xl ml-2 italic font-black">${(parseFloat(cashReceived) - quote.total).toFixed(2)}</span>
+                      Return Change: <span className="text-2xl ml-2 italic font-black">&nbsp;</span>
                     </p>
                   </motion.div>
                 )}
@@ -244,7 +244,7 @@ export function DestinationEntryScreen({ onSetFare }: DestinationEntryScreenProp
                     exit={{ opacity: 0, scale: 0.95 }}
                   >
                     <p className="text-[10px] font-black text-red-500 uppercase tracking-widest">
-                      Insufficient: Needs ${(quote.total - parseFloat(cashReceived)).toFixed(2)} more
+                      Insufficient: Needs &nbsp; more
                     </p>
                   </motion.div>
                 )}

@@ -77,9 +77,9 @@ export function CashVerificationScreen({ fare }: CashVerificationScreenProps) {
               
               <GlassCard variant="strong" className="mb-10 border-[#D4AF37]/40 shadow-2xl">
                 <div className="text-center mb-8 border-b border-[#D4AF37]/10 pb-8">
-                  <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 italic">Calculated Fare</p>
+                  <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 italic">Calculated Total</p>
                   <p className="text-5xl font-black text-white italic tracking-tighter">
-                    <span className="text-[#D4AF37]">$</span>{fare.toFixed(2)}
+                    <span className="text-[#D4AF37]">&nbsp;</span>&nbsp;
                   </p>
                 </div>
                 
@@ -106,7 +106,7 @@ export function CashVerificationScreen({ fare }: CashVerificationScreenProps) {
                     animate={{ opacity: 1, y: 0 }}
                   >
                     <p className="text-[10px] font-black text-green-400 uppercase tracking-widest">
-                      Return Change: <span className="text-2xl ml-2 italic font-black">${(parseFloat(enteredAmount) - fare).toFixed(2)}</span>
+                      Return Change: <span className="text-2xl ml-2 italic font-black">&nbsp;</span>
                     </p>
                   </motion.div>
                 )}
@@ -144,27 +144,27 @@ export function CashVerificationScreen({ fare }: CashVerificationScreenProps) {
               <GlassCard variant="strong" className="mb-10 border-[#D4AF37]/40 shadow-2xl">
                 <div className="space-y-1">
                   <div className="flex items-center justify-between py-6 border-b border-white/5 px-2">
-                    <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest italic">Booking Fare</span>
-                    <span className="text-xl font-black text-white italic tracking-tight">${fare.toFixed(2)}</span>
+                    <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest italic">Booking Total</span>
+                    <span className="text-xl font-black text-white italic tracking-tight">&nbsp;</span>
                   </div>
                   
                   <div className="flex items-center justify-between py-6 border-b border-white/5 px-2">
                     <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest italic">Cash Collection</span>
-                    <span className="text-xl font-black text-green-400 italic tracking-tight">${parseFloat(enteredAmount).toFixed(2)}</span>
+                    <span className="text-xl font-black text-green-400 italic tracking-tight">&nbsp;</span>
                   </div>
                   
                   {parseFloat(enteredAmount) > fare && (
                     <div className="flex items-center justify-between py-6 border-b border-white/5 px-2">
                       <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest italic">Change Distributed</span>
                       <span className="text-xl font-black text-red-500 italic tracking-tight">
-                        -${(parseFloat(enteredAmount) - fare).toFixed(2)}
+                        &nbsp;
                       </span>
                     </div>
                   )}
                   
                   <div className="flex items-center justify-between py-8 bg-gradient-to-r from-[#D4AF37]/10 to-transparent -mx-4 px-6 rounded-2xl mt-6 border border-[#D4AF37]/20 shadow-inner">
-                    <span className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.3em]">Net Revenue</span>
-                    <span className="text-4xl text-[#D4AF37] font-black italic tracking-tighter">${fare.toFixed(2)}</span>
+                    <span className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.3em]">Summary</span>
+                    <span className="text-4xl text-[#D4AF37] font-black italic tracking-tighter">&nbsp;</span>
                   </div>
                 </div>
               </GlassCard>

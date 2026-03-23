@@ -69,7 +69,7 @@ export function PreTripCashScreen({ fare, passengerName }: PreTripCashScreenProp
                   <div>
                     <p className="text-[10px] font-black text-yellow-500 uppercase tracking-widest mb-1">Cash Ride Policy</p>
                     <p className="text-xs font-medium text-gray-400 leading-relaxed">
-                      For cash rides, collect the full fare from <span className="text-white font-bold">{passengerName}</span> before initiating the trip sequence.
+                      For cash rides, collect the full amount from <span className="text-white font-bold">{passengerName}</span> before initiating the trip sequence.
                     </p>
                   </div>
                 </div>
@@ -77,9 +77,9 @@ export function PreTripCashScreen({ fare, passengerName }: PreTripCashScreenProp
               
               <GlassCard variant="strong" className="mb-8 border-[#D4AF37]/40 shadow-[0_0_40px_rgba(212,175,55,0.1)]">
                 <div className="text-center mb-8 border-b border-[#D4AF37]/10 pb-6">
-                  <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3">Expected Trip Fare</p>
+                  <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-3">Expected Trip</p>
                   <p className="text-5xl font-black text-white italic tracking-tighter">
-                    <span className="text-[#D4AF37]">$</span>{fare.toFixed(2)}
+                    <span className="text-[#D4AF37]">&nbsp;</span>&nbsp;
                   </p>
                 </div>
                 
@@ -106,7 +106,7 @@ export function PreTripCashScreen({ fare, passengerName }: PreTripCashScreenProp
                     className="mt-6 p-4 bg-green-500/10 border-2 border-green-500/20 rounded-2xl text-center"
                   >
                     <p className="text-xs font-black text-green-400 uppercase tracking-widest">
-                      Return Change: <span className="text-xl ml-1 italic font-black">${(parseFloat(cashReceived) - fare).toFixed(2)}</span>
+                      Return Change: <span className="text-xl ml-1 italic font-black">&nbsp;</span>
                     </p>
                   </motion.div>
                 )}
@@ -118,7 +118,7 @@ export function PreTripCashScreen({ fare, passengerName }: PreTripCashScreenProp
                     className="mt-6 p-4 bg-red-500/10 border-2 border-red-500/20 rounded-2xl text-center"
                   >
                     <p className="text-xs font-black text-red-400 uppercase tracking-widest">
-                      Insufficient: Needs ${(fare - parseFloat(cashReceived)).toFixed(2)} more
+                      Insufficient: Needs &nbsp; more
                     </p>
                   </motion.div>
                 )}

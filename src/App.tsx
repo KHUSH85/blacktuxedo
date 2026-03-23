@@ -9,7 +9,6 @@ import { KYCUploadScreen } from './components/screens/KYCUploadScreen';
 import { ProfileSetupScreen } from './components/screens/ProfileSetupScreen';
 import { HomeScreen } from './components/screens/HomeScreen';
 import { RideRequestModal } from './components/modals/RideRequestModal';
-import { CodeVerificationScreen } from './components/screens/CodeVerificationScreen';
 import { PreTripCashScreen } from './components/screens/PreTripCashScreen';
 import { RideFlowScreen } from './components/screens/RideFlowScreen';
 import { CashVerificationScreen } from './components/screens/CashVerificationScreen';
@@ -21,12 +20,11 @@ import { EditProfileScreen } from './components/screens/EditProfileScreen';
 function AppContent() {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // Persistence State
   const [isOnline, setIsOnline] = useState(false);
   const [showRideRequest, setShowRideRequest] = useState(false);
   const [showDemoMenu, setShowDemoMenu] = useState(false);
-  const [paymentType, setPaymentType] = useState<'card' | 'cash'>('card');
   const [manualRideFare, setManualRideFare] = useState(0);
 
   // Background Simulation: Ride request logic
@@ -39,16 +37,17 @@ function AppContent() {
     }
   }, [isOnline, location.pathname]);
 
-  const handleAcceptRide = (payment: 'card' | 'cash') => {
+  const handleAcceptRide = (payment: 'card' | 'cash' | 'other' | null) => {
     setShowRideRequest(false);
-    setPaymentType(payment);
-    navigate('/code-verify');
+    navigate('/ride', {
+      state: { paymentMethod: payment }
+    });
   };
 
   return (
     <div className="min-h-screen bg-neutral-900 flex items-center justify-center font-sans p-4 sm:p-0">
       <div className="w-full max-w-md bg-black min-h-[800px] h-[95vh] sm:h-screen relative shadow-2xl overflow-hidden rounded-3xl sm:rounded-none flex flex-col">
-        
+
         {/* Demo Helper Menu */}
         {location.pathname !== '/' && (
           <button
@@ -58,7 +57,7 @@ function AppContent() {
             ⚡
           </button>
         )}
-        
+
         {showDemoMenu && (
           <div className="absolute inset-0 z-[9999] bg-black/80 backdrop-blur-sm p-6 flex items-center justify-center" onClick={() => setShowDemoMenu(false)}>
             <div className="glass-strong border-2 border-[#D4AF37] rounded-2xl p-6 w-full max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
@@ -72,9 +71,9 @@ function AppContent() {
                   { name: 'Earnings', path: '/earnings' },
                   { name: 'Edit Profile', path: '/edit-profile' },
                 ].map((screen) => (
-                  <button 
+                  <button
                     key={screen.path}
-                    onClick={() => { navigate(screen.path); setShowDemoMenu(false); }} 
+                    onClick={() => { navigate(screen.path); setShowDemoMenu(false); }}
                     className="w-full text-left p-3 glass-card rounded-xl hover:border-[#D4AF37] text-white"
                   >
                     {screen.name}
@@ -84,7 +83,7 @@ function AppContent() {
             </div>
           </div>
         )}
-        
+
         <div className="flex-1 w-full h-full overflow-y-auto scrollbar-hide relative">
           <Routes>
             {/* Onboarding */}
@@ -92,11 +91,11 @@ function AppContent() {
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/kyc" element={<KYCUploadScreen />} />
             <Route path="/profile" element={<ProfileSetupScreen />} />
-            
+
             {/* Main Dashboard */}
             <Route path="/home" element={
               <>
-                <HomeScreen 
+                <HomeScreen
                   isOnline={isOnline}
                   onToggleOnline={() => setIsOnline(!isOnline)}
                 />
@@ -108,19 +107,18 @@ function AppContent() {
                 />
               </>
             } />
-            
+
             {/* Active Ride Lifecycle */}
-            <Route path="/code-verify" element={<CodeVerificationScreen passengerName="Sarah Johnson" paymentType={paymentType} />} />
             <Route path="/pre-trip-cash" element={<PreTripCashScreen fare={manualRideFare || 24.50} passengerName="Sarah Johnson" />} />
-            <Route path="/ride" element={<RideFlowScreen paymentType={paymentType} />} />
+            <Route path="/ride" element={<RideFlowScreen />} />
             <Route path="/cash" element={<CashVerificationScreen fare={24.50} />} />
             <Route path="/rating" element={<RatingScreen passengerName="Sarah Johnson" />} />
-            
+
             {/* Extras & Manual Entry */}
             <Route path="/earnings" element={<EarningsScreen />} />
             <Route path="/edit-profile" element={<EditProfileScreen />} />
             <Route path="/manual-ride" element={<DestinationEntryScreen onSetFare={setManualRideFare} />} />
-            
+
             <Route path="*" element={<Navigate to="/home" replace />} />
           </Routes>
         </div>

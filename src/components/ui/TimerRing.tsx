@@ -4,12 +4,19 @@ interface TimerRingProps {
   duration: number; // in seconds
   size?: number;
   onComplete?: () => void;
+  /**
+   * When false, the timer will not decrement and `onComplete` will not fire.
+   * Used to stop the timer immediately when a ride is accepted.
+   */
+  active?: boolean;
 }
 
-export function TimerRing({ duration, size = 120, onComplete }: TimerRingProps) {
+export function TimerRing({ duration, size = 120, onComplete, active = true }: TimerRingProps) {
   const [timeLeft, setTimeLeft] = useState(duration);
   
   useEffect(() => {
+    if (!active) return;
+
     if (timeLeft <= 0) {
       onComplete?.();
       return;
@@ -20,7 +27,7 @@ export function TimerRing({ duration, size = 120, onComplete }: TimerRingProps) 
     }, 1000);
     
     return () => clearInterval(timer);
-  }, [timeLeft, onComplete]);
+  }, [timeLeft, onComplete, active]);
   
   const progress = (timeLeft / duration) * 100;
   const circumference = 2 * Math.PI * 50;

@@ -1,31 +1,44 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 // Add Star to the list below
-import { Navigation, User, Phone, MessageCircle, MapPin, Clock, Star } from 'lucide-react'; 
-import { useNavigate } from 'react-router-dom';
+import { Navigation, User, Phone, MessageCircle, MapPin, Clock, Star } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { GlassCard, GoldButton } from '../ui/GlassCard';
-import { motion, AnimatePresence } from 'framer-motion';  
+import { motion, AnimatePresence } from 'framer-motion';
+import { useNotification } from '../../contexts/NotificationContext';
 
-interface RideFlowScreenProps {
-  paymentType?: 'card' | 'cash';
+interface RideFlowLocationState {
+  paymentMethod?: 'card' | 'cash' | 'other' | null;
 }
 
 type RideStatus = 'navigate' | 'arrive' | 'start' | 'complete';
 
-export function RideFlowScreen({ paymentType = 'card' }: RideFlowScreenProps) {
+export function RideFlowScreen() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [status, setStatus] = useState<RideStatus>('navigate');
-  
+  const { showInfo } = useNotification();
+
+  const paymentMethod = (location.state as RideFlowLocationState | null)?.paymentMethod ?? null;
+
+  useEffect(() => {
+    // Debug (temporary): verify payment method propagation into ride flow
+    // eslint-disable-next-line no-console
+    console.log('Payment:', paymentMethod);
+  }, [paymentMethod]);
+
+  const isCash = paymentMethod === 'cash';
+  const arriveActionText = isCash ? 'Start Cash Trip' : 'Start Trip';
+  const isCashStartAction = status === 'arrive' && isCash;
+
   const rideDetails = {
     passenger: 'Sarah Johnson',
     rating: 4.8,
-    phone: '+1 (555) 123-4567',
     pickup: '123 Main Street, Downtown',
     dropoff: '456 Oak Avenue, Uptown',
     distance: '8.5 mi',
-    duration: '18 min',
-    fare: 24.50
+    duration: '18 min'
   };
-  
+
   const statusConfig = {
     navigate: {
       title: 'Navigate to Pickup',
@@ -44,8 +57,8 @@ export function RideFlowScreen({ paymentType = 'card' }: RideFlowScreenProps) {
       color: 'green'
     },
     start: {
-      title: 'Trip in Progress',
-      subtitle: 'Navigate to destination',
+      title: 'Waiting for payment...',
+      subtitle: 'Confirming payment status',
       action: 'End Trip',
       nextStatus: 'complete' as RideStatus,
       icon: <Clock size={48} className="text-[#D4AF37]" />,
@@ -54,36 +67,53 @@ export function RideFlowScreen({ paymentType = 'card' }: RideFlowScreenProps) {
     complete: {
       title: 'Trip Completed',
       subtitle: 'Arrived at destination',
-      action: 'Complete & Collect Payment',
+      action: 'Complete Ride',
       nextStatus: 'complete' as RideStatus,
       icon: <MapPin size={48} className="text-green-500" />,
       color: 'green'
     }
   };
-  
+
   const config = statusConfig[status];
-  
+
   const handleAction = () => {
     if (status === 'complete') {
-      if (paymentType === 'cash') {
+      if (paymentMethod === 'cash') {
         navigate('/cash');
       } else {
         navigate('/rating');
       }
     } else {
+      if (status === 'arrive') {
+        // No payment method selected: block starting the ride and notify passenger.
+        if (!paymentMethod) {
+          const message =
+            'Dear Passenger, you forgot to enter the payment method. Please enter it to start the ride.';
+          showInfo('Payment Method Missing', message);
+
+          // Simulate SMS / Email trigger (replace with backend integration later).
+          // eslint-disable-next-line no-console
+          console.log('[payment-method-missing]', { message });
+          return;
+        }
+
+        setStatus('start');
+        return;
+      }
+
       setStatus(config.nextStatus);
     }
   };
-  
+
   const getProgress = () => {
-    switch(status) {
+    switch (status) {
       case 'navigate': return 25;
       case 'arrive': return 50;
       case 'start': return 75;
       case 'complete': return 100;
     }
   };
-  
+
   return (
     <div className="min-h-screen bg-black flex flex-col safe-area overflow-hidden">
       {/* Branded Header Identity */}
@@ -93,7 +123,7 @@ export function RideFlowScreen({ paymentType = 'card' }: RideFlowScreenProps) {
             <h1 className="text-2xl font-black text-white italic uppercase tracking-tighter leading-none">Tuxedo</h1>
             <p className="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.3em] mt-1">Premium Driver</p>
           </div>
-          <motion.div 
+          <motion.div
             whileTap={{ scale: 0.9 }}
             className="w-12 h-12 rounded-full border-2 border-[#D4AF37]/30 glass-strong flex items-center justify-center overflow-hidden gold-glow"
           >
@@ -110,34 +140,33 @@ export function RideFlowScreen({ paymentType = 'card' }: RideFlowScreenProps) {
             <p className="text-[10px] font-black text-[#D4AF37] uppercase tracking-widest mt-4">Navigation Active</p>
           </div>
         </div>
-        
+
         {/* Top Status Card with Lifecycle Stage */}
         <div className="absolute top-2 left-6 right-6 z-20">
           <GlassCard variant="strong" className="border-[#D4AF37]/40 gold-glow p-5">
             <AnimatePresence mode="wait">
-              <motion.div 
+              <motion.div
                 key={status}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 10 }}
                 className="text-center mb-4"
               >
-                <div className={`w-14 h-14 mx-auto mb-3 rounded-full flex items-center justify-center transition-all duration-500 ${
-                  status === 'navigate' ? 'bg-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.3)]' :
-                  status === 'arrive' ? 'bg-green-500/20 shadow-[0_0_15px_rgba(34,197,94,0.3)]' :
-                  status === 'start' ? 'bg-[#D4AF37]/20 shadow-[0_0_15px_rgba(212,175,55,0.3)]' :
-                  'bg-green-500/20 shadow-[0_0_15px_rgba(34,197,94,0.3)]'
-                }`}>
+                <div className={`w-14 h-14 mx-auto mb-3 rounded-full flex items-center justify-center transition-all duration-500 ${status === 'navigate' ? 'bg-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.3)]' :
+                    status === 'arrive' ? 'bg-green-500/20 shadow-[0_0_15px_rgba(34,197,94,0.3)]' :
+                      status === 'start' ? 'bg-[#D4AF37]/20 shadow-[0_0_15px_rgba(212,175,55,0.3)]' :
+                        'bg-green-500/20 shadow-[0_0_15px_rgba(34,197,94,0.3)]'
+                  }`}>
                   {React.cloneElement(config.icon as React.ReactElement, { size: 32 })}
                 </div>
                 <h2 className="text-lg font-black text-white uppercase italic tracking-tight">{config.title}</h2>
                 <p className="text-[10px] font-bold text-[#D4AF37] uppercase tracking-[0.2em]">{config.subtitle}</p>
               </motion.div>
             </AnimatePresence>
-            
+
             {/* Luxury Progress Bar */}
             <div className="w-full h-1.5 bg-gray-900 rounded-full overflow-hidden border border-white/5">
-              <motion.div 
+              <motion.div
                 className="h-full bg-gradient-to-r from-[#D4AF37] via-[#F4E5A1] to-[#D4AF37] gold-shimmer"
                 initial={{ width: 0 }}
                 animate={{ width: `${getProgress()}%` }}
@@ -152,7 +181,7 @@ export function RideFlowScreen({ paymentType = 'card' }: RideFlowScreenProps) {
             </div>
           </GlassCard>
         </div>
-        
+
         {/* Distance/Duration overlay */}
         <div className="absolute bottom-6 left-6 right-6 z-20">
           <AnimatePresence>
@@ -178,7 +207,7 @@ export function RideFlowScreen({ paymentType = 'card' }: RideFlowScreenProps) {
           </AnimatePresence>
         </div>
       </div>
-      
+
       {/* Bottom Sheet - Ride Details */}
       <div className="glass-strong rounded-t-[2.5rem] p-8 border-t-2 border-[#D4AF37]/50 safe-bottom shadow-[0_-20px_40px_rgba(0,0,0,0.8)] z-30">
         <div className="max-w-md mx-auto">
@@ -191,56 +220,66 @@ export function RideFlowScreen({ paymentType = 'card' }: RideFlowScreenProps) {
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="text-xl font-black text-white italic truncate tracking-tight">{rideDetails.passenger}</h3>
-              <div className="flex items-center gap-2 mt-1">
-                <Star size={14} className="text-[#D4AF37] fill-[#D4AF37]" />
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{rideDetails.rating} Protocol Rating</span>
+              {status !== 'complete' && (
+                <div className="flex items-center gap-2 mt-1">
+                  <Star size={14} className="text-[#D4AF37] fill-[#D4AF37]" />
+                  <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{rideDetails.rating} Protocol Rating</span>
+                </div>
+              )}
+            </div>
+            {status !== 'complete' && (
+              <div className="flex gap-2 flex-shrink-0">
+                <motion.button whileTap={{ scale: 0.9 }} className="p-4 glass-card bg-black/40 rounded-2xl text-[#D4AF37] border-[#D4AF37]/30 flex items-center justify-center hover-lift">
+                  <Phone size={22} />
+                </motion.button>
+                <motion.button whileTap={{ scale: 0.9 }} className="p-4 glass-card bg-black/40 rounded-2xl text-[#D4AF37] border-[#D4AF37]/30 flex items-center justify-center hover-lift">
+                  <MessageCircle size={22} />
+                </motion.button>
               </div>
-            </div>
-            <div className="flex gap-2 flex-shrink-0">
-              <motion.button whileTap={{ scale: 0.9 }} className="p-4 glass-card bg-black/40 rounded-2xl text-[#D4AF37] border-[#D4AF37]/30 flex items-center justify-center hover-lift">
-                <Phone size={22} />
-              </motion.button>
-              <motion.button whileTap={{ scale: 0.9 }} className="p-4 glass-card bg-black/40 rounded-2xl text-[#D4AF37] border-[#D4AF37]/30 flex items-center justify-center hover-lift">
-                <MessageCircle size={22} />
-              </motion.button>
-            </div>
+            )}
           </div>
-          
+
           {/* Locations */}
           <GlassCard variant="subtle" className="mb-8 border-[#D4AF37]/10 bg-black/40">
             <div className="space-y-6">
               <div className="flex items-start gap-4">
                 <div className="w-2.5 h-2.5 rounded-full bg-green-500 mt-1.5 flex-shrink-0 status-online" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Pickup Origin</p>
+                  <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Pickup Location</p>
                   <p className="text-sm font-bold text-white">{rideDetails.pickup}</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start gap-4">
                 <div className="w-2.5 h-2.5 rounded-full bg-red-500 mt-1.5 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Destination Target</p>
+                  <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Drop-off Location</p>
                   <p className="text-sm font-bold text-white italic">{rideDetails.dropoff}</p>
                 </div>
               </div>
-              
+
               <div className="flex items-center justify-between pt-5 border-t border-[#D4AF37]/20">
                 <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{rideDetails.distance} • {rideDetails.duration}</span>
-                <span className="text-2xl font-black text-[#D4AF37] italic tracking-tighter">${rideDetails.fare.toFixed(2)}</span>
+                <span className="text-2xl font-black text-[#D4AF37] italic tracking-tighter">&nbsp;</span>
               </div>
             </div>
           </GlassCard>
-          
+
           {/* Actions */}
           <div className="space-y-4">
-            <GoldButton onClick={handleAction} className="py-6 text-xl font-black italic tracking-tighter">
-              {config.action}
+            <GoldButton
+              onClick={handleAction}
+              variant={isCashStartAction ? 'secondary' : 'primary'}
+              className={`py-6 text-xl font-black italic tracking-tighter ${
+                isCashStartAction ? 'bg-green-500 border-none text-white shadow-[0_0_20px_rgba(34,197,94,0.5)]' : ''
+              }`}
+            >
+              {status === 'arrive' ? arriveActionText : config.action}
             </GoldButton>
-            
+
             {status !== 'complete' && (
-              <GoldButton 
-                variant="ghost" 
+              <GoldButton
+                variant="ghost"
                 onClick={() => navigate('/home')}
                 className="text-xs font-bold uppercase tracking-widest border-[#D4AF37]/10"
               >
