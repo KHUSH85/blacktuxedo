@@ -36,7 +36,8 @@ export function RideFlowScreen() {
     pickup: '123 Main Street, Downtown',
     dropoff: '456 Oak Avenue, Uptown',
     distance: '8.5 mi',
-    duration: '18 min'
+    duration: '18 min',
+    fare: 24.50
   };
 
   const statusConfig = {
@@ -260,7 +261,9 @@ export function RideFlowScreen() {
 
               <div className="flex items-center justify-between pt-5 border-t border-[#D4AF37]/20">
                 <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{rideDetails.distance} • {rideDetails.duration}</span>
-                <span className="text-2xl font-black text-[#D4AF37] italic tracking-tighter">&nbsp;</span>
+                <span className="text-2xl font-black text-[#D4AF37] italic tracking-tighter">
+                  {status === 'complete' ? `$${rideDetails.fare.toFixed(2)}` : <>&nbsp;</>}
+                </span>
               </div>
             </div>
           </GlassCard>

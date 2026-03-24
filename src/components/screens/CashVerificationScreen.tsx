@@ -144,6 +144,11 @@ export function CashVerificationScreen({ fare }: CashVerificationScreenProps) {
               <GlassCard variant="strong" className="mb-10 border-[#D4AF37]/40 shadow-2xl">
                 <div className="space-y-1">
                   <div className="flex items-center justify-between py-6 border-b border-white/5 px-2">
+                    <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest italic">Trip Fare</span>
+                    <span className="text-xl font-black text-[#D4AF37] italic tracking-tight">${fare.toFixed(2)}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between py-6 border-b border-white/5 px-2">
                     <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest italic">Booking Total</span>
                     <span className="text-xl font-black text-white italic tracking-tight">&nbsp;</span>
                   </div>

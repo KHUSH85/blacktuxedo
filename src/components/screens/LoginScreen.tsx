@@ -100,7 +100,6 @@ export function LoginScreen() {
                   className="space-y-6"
                 >
                   <div>
-                    <label className="block text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-4 ml-1">Dispatch Phone Registry</label>
                     <div className="flex items-center gap-4 glass-card bg-black/40 p-5 border-2 border-[#D4AF37]/30 rounded-2xl min-h-[64px] focus-within:border-[#D4AF37] transition-all">
                       <Phone size={24} className="text-[#D4AF37]" />
                       <input 
@@ -136,18 +135,19 @@ export function LoginScreen() {
                   exit={{ opacity: 0, x: 20 }}
                 >
                   <label className="block text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-6 text-center italic">Verify Encrypted Access Key</label>
-                  <div className="flex justify-center gap-2 mb-8">
+                  <div className="flex justify-center gap-2 mb-8 flex-nowrap">
                     {otp.map((value, index) => (
                       <input
                         key={index}
                         id={`otp-${index}`}
-                        type="text"
+                        type="tel"
                         inputMode="numeric"
                         maxLength={1}
                         value={value}
                         onChange={(e) => handleOtpInput(index, e.target.value)}
                         onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                        className="w-11 h-16 text-center text-3xl font-black bg-black/60 border-2 border-[#D4AF37]/30 rounded-xl text-white focus:outline-none focus:border-[#D4AF37] focus:shadow-[0_0_15px_rgba(212,175,55,0.4)] transition-all duration-300 italic"
+                        className="w-11 h-16 shrink-0 text-center text-3xl font-black bg-black/60 border-2 border-[#D4AF37]/30 rounded-xl text-white focus:outline-none focus:border-[#D4AF37] focus:shadow-[0_0_15px_rgba(212,175,55,0.4)] transition-all duration-300 italic"
+                        style={{ width: '2.75rem', height: '4rem', flex: '0 0 2.75rem' }}
                         autoFocus={index === 0}
                       />
                     ))}
@@ -190,7 +190,7 @@ export function LoginScreen() {
               className="w-full py-6 text-xl font-black uppercase tracking-tighter italic"
               icon={step === 'phone' ? <ArrowRight className="w-6 h-6" /> : <Lock className="w-6 h-6" />}
             >
-              {step === 'phone' ? 'Initiate Protocol' : 'Authenticate Entry'}
+              {step === 'phone' ? 'Begin Secure Access' : 'Authenticate Entry'}
             </GoldButton>
             
             <motion.button 

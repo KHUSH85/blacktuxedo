@@ -142,7 +142,7 @@ export function HomeScreen({ isOnline, onToggleOnline }: HomeScreenProps) {
               isOnline ? 'bg-black border-2 border-[#D4AF37]/40 text-[#D4AF37] shadow-none hover:bg-[#D4AF37]/10' : ''
             }`}
           >
-            {isOnline ? 'Terminate Protocol' : 'Initiate Session'}
+            {isOnline ? 'Go Offline' : 'Go Online'}
           </GoldButton>
         </GlassCard>
         
