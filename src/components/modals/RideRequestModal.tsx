@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { MapPin, User, Banknote, CreditCard, Navigation } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { MapPin, User, Banknote, CreditCard, Navigation, Clock } from 'lucide-react';
 import { GlassCard } from '../ui/GlassCard';
 import { Button } from '../ui/Button';
 import { TimerRing } from '../ui/TimerRing';
@@ -9,12 +9,27 @@ interface RideRequestModalProps {
   isOpen: boolean;
   onAccept: (paymentMethod: 'card' | 'cash' | 'other' | null) => void;
   onReject: () => void;
-  onCounter: () => void;
 }
 
-export function RideRequestModal({ isOpen, onAccept, onReject, onCounter }: RideRequestModalProps) {
+export function RideRequestModal({ isOpen, onAccept, onReject }: RideRequestModalProps) {
   const [hasAccepted, setHasAccepted] = useState(false);
+  const [eta, setEta] = useState<string>('');
+  const [pickupTime, setPickupTime] = useState<string>('');
+  const [dropoffTime, setDropoffTime] = useState<string>('');
   const { showSuccess, showInfo, showWarning } = useNotification();
+
+  useEffect(() => {
+    // Calculate realistic ETA for pickup and dropoff based on the current time
+    const durationMins = 18; 
+    const pickupMins = 5;
+    const pTime = new Date(Date.now() + pickupMins * 60000);
+    const dTime = new Date(pTime.getTime() + durationMins * 60000);
+    
+    const timeOptions: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit' };
+    setEta(dTime.toLocaleTimeString([], timeOptions));
+    setPickupTime(pTime.toLocaleTimeString([], timeOptions));
+    setDropoffTime(dTime.toLocaleTimeString([], timeOptions));
+  }, []);
 
   if (!isOpen) return null;
 
@@ -29,12 +44,8 @@ export function RideRequestModal({ isOpen, onAccept, onReject, onCounter }: Ride
     onReject();
   };
 
-  const handleCounter = () => {
-    showWarning('Counter Offer Sent', 'Waiting for passenger response');
-    onCounter();
-  };
-
   const rideDetails = {
+    fare: '$45.00',
     passenger: 'Sarah Johnson',
     rating: 4.8,
     pickup: '123 Main Street, Downtown',
@@ -68,6 +79,22 @@ export function RideRequestModal({ isOpen, onAccept, onReject, onCounter }: Ride
           <p className="text-gray-400 text-sm">Accept within 30 seconds</p>
         </div>
 
+        {/* Dummy Map Preview & ETA */}
+        <div className="relative w-full h-32 rounded-xl overflow-hidden mb-6 border-2 border-[#D4AF37]/20 shadow-inner group">
+          <img src="/dummy-map.png" alt="Map Preview" className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+          <div className="absolute bottom-3 left-3 right-3 flex justify-between items-center">
+            <div className="flex items-center gap-2 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-[#D4AF37]/50 shadow-lg">
+              <Clock size={14} className="text-[#D4AF37]" />
+              <span className="text-xs font-bold text-[#D4AF37] tracking-wider">ETA: {eta}</span>
+            </div>
+            <div className="flex items-center gap-2 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10 shadow-lg">
+              <Navigation size={14} className="text-gray-300" />
+              <span className="text-xs font-bold text-gray-300">{rideDetails.distance}</span>
+            </div>
+          </div>
+        </div>
+
         <div className="space-y-4 mb-6">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full bg-[#D4AF37]/20 flex items-center justify-center">
@@ -96,7 +123,10 @@ export function RideRequestModal({ isOpen, onAccept, onReject, onCounter }: Ride
             <div className="flex items-start gap-3">
               <div className="w-2 h-2 rounded-full bg-green-500 mt-2" />
               <div className="flex-1">
-                <p className="text-sm text-gray-400">Pickup</p>
+                <div className="flex justify-between items-center mb-1">
+                  <p className="text-sm text-gray-400">Pickup</p>
+                  <p className="text-xs font-bold text-[#D4AF37]">{pickupTime}</p>
+                </div>
                 <p className="text-sm">{rideDetails.pickup}</p>
               </div>
             </div>
@@ -104,41 +134,46 @@ export function RideRequestModal({ isOpen, onAccept, onReject, onCounter }: Ride
             <div className="flex items-start gap-3">
               <div className="w-2 h-2 rounded-full bg-red-500 mt-2" />
               <div className="flex-1">
-                <p className="text-sm text-gray-400">Dropoff</p>
+                <div className="flex justify-between items-center mb-1">
+                  <p className="text-sm text-gray-400">Dropoff</p>
+                  <p className="text-xs font-bold text-[#D4AF37]">{dropoffTime}</p>
+                </div>
                 <p className="text-sm">{rideDetails.dropoff}</p>
               </div>
             </div>
 
             <div className="flex items-center gap-4 pt-2 border-t border-[#D4AF37]/20">
               <div className="flex items-center gap-2">
-                <Navigation size={16} className="text-[#D4AF37]" />
-                <span className="text-sm">{rideDetails.distance}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-400">{rideDetails.duration}</span>
+                <Clock size={16} className="text-[#D4AF37]" />
+                <span className="text-sm font-bold text-white">{rideDetails.duration}</span>
+                <span className="text-xs text-gray-500 uppercase tracking-widest ml-1">Ride Time</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="space-y-3">
-          <Button onClick={handleAccept} disabled={hasAccepted} className="w-full">
-            Accept Ride
-          </Button>
-          <div className="grid grid-cols-2 gap-3">
-            <Button
-              variant="outline"
-              size="medium"
-              onClick={handleCounter}
-            >
-              Counter Offer
-            </Button>
+        <div className="space-y-4 mt-6">
+          {/* The Fare Place */}
+          <div className="text-center py-4 rounded-2xl border-2 border-[#D4AF37]/20 bg-gradient-to-b from-[#D4AF37]/10 to-transparent">
+            <p className="text-sm text-gray-400 mb-1">Estimated Fare</p>
+            <p className="text-4xl font-bold text-[#D4AF37]">{rideDetails.fare}</p>
+          </div>
+
+          {/* Accept and Decline Buttons */}
+          <div className="grid grid-cols-2 gap-4">
             <Button
               variant="danger"
-              size="medium"
               onClick={handleReject}
+              className="w-full py-4 text-lg font-bold"
             >
               Decline
+            </Button>
+            <Button 
+              onClick={handleAccept} 
+              disabled={hasAccepted} 
+              className="w-full py-4 text-lg font-bold shadow-lg shadow-[#D4AF37]/20"
+            >
+              Accept
             </Button>
           </div>
         </div>

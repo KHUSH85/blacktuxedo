@@ -103,7 +103,6 @@ function AppContent() {
                   isOpen={showRideRequest}
                   onAccept={handleAcceptRide}
                   onReject={() => setShowRideRequest(false)}
-                  onCounter={() => alert('Counter offer sent!')}
                 />
               </>
             } />

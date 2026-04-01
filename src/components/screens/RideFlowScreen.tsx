@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 // Add Star to the list below
-import { Navigation, User, Phone, MessageCircle, MapPin, Clock, Star } from 'lucide-react';
+import { Navigation, User, Phone, MessageCircle, MapPin, Clock, Star, Banknote } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { GlassCard, GoldButton } from '../ui/GlassCard';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -16,6 +16,7 @@ export function RideFlowScreen() {
   const navigate = useNavigate();
   const location = useLocation();
   const [status, setStatus] = useState<RideStatus>('navigate');
+  const [showCashPrompt, setShowCashPrompt] = useState(false);
   const { showInfo } = useNotification();
 
   const paymentMethod = (location.state as RideFlowLocationState | null)?.paymentMethod ?? null;
@@ -98,6 +99,11 @@ export function RideFlowScreen() {
           return;
         }
 
+        if (isCash) {
+          setShowCashPrompt(true);
+          return;
+        }
+
         setStatus('start');
         return;
       }
@@ -154,9 +160,9 @@ export function RideFlowScreen() {
                 className="text-center mb-4"
               >
                 <div className={`w-14 h-14 mx-auto mb-3 rounded-full flex items-center justify-center transition-all duration-500 ${status === 'navigate' ? 'bg-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.3)]' :
-                    status === 'arrive' ? 'bg-green-500/20 shadow-[0_0_15px_rgba(34,197,94,0.3)]' :
-                      status === 'start' ? 'bg-[#D4AF37]/20 shadow-[0_0_15px_rgba(212,175,55,0.3)]' :
-                        'bg-green-500/20 shadow-[0_0_15px_rgba(34,197,94,0.3)]'
+                  status === 'arrive' ? 'bg-green-500/20 shadow-[0_0_15px_rgba(34,197,94,0.3)]' :
+                    status === 'start' ? 'bg-[#D4AF37]/20 shadow-[0_0_15px_rgba(212,175,55,0.3)]' :
+                      'bg-green-500/20 shadow-[0_0_15px_rgba(34,197,94,0.3)]'
                   }`}>
                   {React.cloneElement(config.icon as React.ReactElement, { size: 32 })}
                 </div>
@@ -273,9 +279,8 @@ export function RideFlowScreen() {
             <GoldButton
               onClick={handleAction}
               variant={isCashStartAction ? 'secondary' : 'primary'}
-              className={`py-6 text-xl font-black italic tracking-tighter ${
-                isCashStartAction ? 'bg-green-500 border-none text-white shadow-[0_0_20px_rgba(34,197,94,0.5)]' : ''
-              }`}
+              className={`py-6 text-xl font-black italic tracking-tighter ${isCashStartAction ? 'bg-green-500 border-none text-white shadow-[0_0_20px_rgba(34,197,94,0.5)]' : ''
+                }`}
             >
               {status === 'arrive' ? arriveActionText : config.action}
             </GoldButton>
@@ -292,6 +297,46 @@ export function RideFlowScreen() {
           </div>
         </div>
       </div>
+      {showCashPrompt && (
+        <div className="absolute inset-0 bg-black/95 backdrop-blur-md z-[1000] flex items-center justify-center p-6 w-full h-full animate-fade-in">
+          <GlassCard
+            variant="strong"
+            className="w-full max-w-sm border-2 border-[#D4AF37] gold-glow p-8 text-center shadow-[0_0_50px_rgba(212,175,55,0.15)]"
+          >
+            <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-6 border border-green-500/50 shadow-[0_0_15px_rgba(34,197,94,0.3)]">
+              <Banknote size={40} className="text-green-500" />
+            </div>
+            <h2 className="text-2xl font-black text-[#D4AF37] italic uppercase tracking-widest mb-3">Cash Collection</h2>
+            <div className="mb-8">
+              <p className="text-gray-400 text-sm uppercase tracking-widest mb-1">Amount to Collect</p>
+              <p className="text-5xl font-black text-green-500 mb-4 drop-shadow-[0_0_15px_rgba(34,197,94,0.4)] tracking-tighter">
+                ${rideDetails.fare.toFixed(2)}
+              </p>
+              <p className="text-gray-300 text-lg leading-relaxed font-medium">
+                Have you collected this payment from the passenger?
+              </p>
+            </div>
+            <div className="space-y-4">
+              <GoldButton
+                onClick={() => {
+                  setShowCashPrompt(false);
+                  setStatus('start');
+                }}
+                variant="primary"
+                className="w-full py-4 text-xl font-black italic tracking-wider shadow-[0_0_20px_rgba(212,175,55,0.4)]"
+              >
+                Yes
+              </GoldButton>
+              <button
+                onClick={() => setShowCashPrompt(false)}
+                className="w-full py-4 text-lg font-bold italic tracking-wider text-red-500 border border-red-500/30 rounded-xl bg-red-900/10 hover:bg-red-900/30 transition-all font-sans"
+              >
+                No
+              </button>
+            </div>
+          </GlassCard>
+        </div>
+      )}
     </div>
   );
 }

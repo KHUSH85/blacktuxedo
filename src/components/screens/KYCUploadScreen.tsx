@@ -71,7 +71,7 @@ export function KYCUploadScreen() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <h2 className="text-3xl font-black text-white uppercase italic tracking-tight mb-2">KYC Protocol</h2>
+          <h2 className="text-3xl font-black text-white uppercase italic tracking-tight mb-2">Limo Verified</h2>
           <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Upload Encrypted Identity Documents</p>
         </motion.div>
         
