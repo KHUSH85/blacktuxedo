@@ -7,8 +7,8 @@ import { PanelLeftIcon } from "lucide-react";
 
 import { useIsMobile } from "./use-mobile";
 import { cn } from "./utils";
-import { Button } from "./button";
-import { Input } from "./input";
+import { Button } from "./Button";
+import { Input } from "./Input";
 import { Separator } from "./separator";
 import {
   Sheet,
@@ -267,7 +267,7 @@ function SidebarTrigger({
       variant="ghost"
       size="icon"
       className={cn("size-7", className)}
-      onClick={(event) => {
+      onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
         onClick?.(event);
         toggleSidebar();
       }}
