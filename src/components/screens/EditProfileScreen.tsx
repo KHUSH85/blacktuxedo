@@ -255,11 +255,10 @@ export function EditProfileScreen() {
                   <SelectValue placeholder="Select vehicle type" />
                 </SelectTrigger>
                 <SelectContent className="bg-gray-900 border-[#D4AF37]/30 text-white rounded-2xl">
-                  <SelectItem value="Limousine">Limousine</SelectItem>
-                  <SelectItem value="Executive Sedan">Executive Sedan</SelectItem>
+                  <SelectItem value="Stretch">Stretch</SelectItem>
+                  <SelectItem value="Executive Luxury Vehicle">Executive Luxury Vehicle</SelectItem>
                   <SelectItem value="Luxury SUV">Luxury SUV</SelectItem>
                   <SelectItem value="Luxury Van">Luxury Van</SelectItem>
-                  <SelectItem value="Exotic Car">Exotic Car</SelectItem>
                 </SelectContent>
               </Select>
             </div>

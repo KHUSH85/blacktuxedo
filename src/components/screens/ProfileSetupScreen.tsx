@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Wifi, Baby, Droplets, Music, Newspaper, ChevronRight, Smartphone, CloudRain, Briefcase, User } from 'lucide-react';
+import { Wifi, Baby, Droplets, Newspaper, ChevronRight, Smartphone, CloudRain, Briefcase, User, Tv } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { GlassCard, GoldButton } from '../ui/GlassCard';
 import { motion } from 'framer-motion';
@@ -17,12 +17,12 @@ export function ProfileSetupScreen() {
   const [amenities, setAmenities] = useState<Amenity[]>([
     { id: 'wifi', name: 'WiFi', icon: <Wifi size={28} />, enabled: false },
     { id: 'charger', name: 'Phone Charger', icon: <Smartphone size={28} />, enabled: false },
-    { id: 'water', name: 'Bottled Water', icon: <Droplets size={28} />, enabled: false },
-    { id: 'music', name: 'Premium Audio', icon: <Music size={28} />, enabled: false },
+    { id: 'water', name: 'Premium Water', icon: <Droplets size={28} />, enabled: false },
     { id: 'newspaper', name: 'Newspaper', icon: <Newspaper size={28} />, enabled: false },
     { id: 'umbrella', name: 'Umbrella', icon: <CloudRain size={28} />, enabled: false },
     { id: 'carseat', name: 'Child Seat', icon: <Baby size={28} />, enabled: false },
-    { id: 'luggage', name: 'Extra Luggage', icon: <Briefcase size={28} />, enabled: false }
+    { id: 'luggage', name: 'Extra Luggage', icon: <Briefcase size={28} />, enabled: false },
+    { id: 'tv', name: 'TV', icon: <Tv size={28} />, enabled: false }
   ]);
   
   const toggleAmenity = (id: string) => {
@@ -60,11 +60,10 @@ export function ProfileSetupScreen() {
           <h3 className="text-xs font-black text-[#D4AF37] mb-6 uppercase tracking-[0.2em] italic px-1">Executive Vehicle Class</h3>
           <div className="space-y-4">
             {[
-              { type: 'Limousine', desc: 'Extended luxury sedan' },
-              { type: 'Executive Sedan', desc: 'Mercedes S-Class, BMW 7 Series' },
+              { type: 'Stretch', desc: 'Extended Luxury Vehicle' },
+              { type: 'Executive Luxury Vehicle', desc: 'Mercedes S-Class, BMW 7 Series' },
               { type: 'Luxury SUV', desc: 'Range Rover, Cadillac Escalade' },
               { type: 'Luxury Van', desc: 'Mercedes Sprinter, luxury shuttle' },
-              { type: 'Exotic Car', desc: 'Sports cars, supercars' }
             ].map((vehicle) => (
               <motion.button
                 key={vehicle.type}

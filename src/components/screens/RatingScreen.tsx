@@ -17,7 +17,7 @@ export function RatingScreen({ passengerName }: RatingScreenProps) {
   const [customNote, setCustomNote] = useState('');
   const { showSuccess } = useNotification();
   
-  const noteTemplates = [
+  const goodNotes = [
     'Great conversation',
     'Respectful passenger',
     'On time',
@@ -27,6 +27,20 @@ export function RatingScreen({ passengerName }: RatingScreenProps) {
     'Good tipper',
     'Polite'
   ];
+
+  const issueNotes = [
+    'Rude Behavior',
+    'Slammed Car Door',
+    'Eating in Vehicle',
+    'Disrespectful',
+    'Left Mess',
+    'Unsafe Request',
+    'Aggressive',
+    'Bad Hygiene',
+    'Inappropriate Language'
+  ];
+
+  const noteTemplates = rating > 0 && rating <= 3 ? issueNotes : goodNotes;
   
   const toggleNote = (note: string) => {
     if (selectedNotes.includes(note)) {
@@ -34,6 +48,11 @@ export function RatingScreen({ passengerName }: RatingScreenProps) {
     } else {
       setSelectedNotes([...selectedNotes, note]);
     }
+  };
+
+  const handleRating = (star: number) => {
+    if (rating !== star) setSelectedNotes([]);
+    setRating(star);
   };
   
   const handleSubmit = () => {
@@ -80,7 +99,7 @@ export function RatingScreen({ passengerName }: RatingScreenProps) {
               {[1, 2, 3, 4, 5].map((star) => (
                 <motion.button
                   key={star}
-                  onClick={() => setRating(star)}
+                  onClick={() => handleRating(star)}
                   onMouseEnter={() => setHoveredRating(star)}
                   onMouseLeave={() => setHoveredRating(0)}
                   whileHover={{ scale: 1.15 }}
@@ -128,7 +147,7 @@ export function RatingScreen({ passengerName }: RatingScreenProps) {
                 transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
               >
                 <GlassCard variant="subtle" className="border-[#D4AF37]/10">
-                  <h3 className="text-[10px] font-black text-[#D4AF37] mb-6 uppercase tracking-[0.2em] flex items-center gap-2 px-1">
+                  <h3 className={`text-[10px] font-black mb-6 uppercase tracking-[0.2em] flex items-center gap-2 px-1 ${rating <= 3 ? 'text-red-400' : 'text-[#D4AF37]'}`}>
                     <Sparkles size={14} className="opacity-50" />
                     {rating >= 4 ? 'Distinguished Details' : 'Protocol Issues'}
                   </h3>
@@ -141,8 +160,10 @@ export function RatingScreen({ passengerName }: RatingScreenProps) {
                         onClick={() => toggleNote(note)}
                         className={`px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all min-h-[48px] border-2 ${
                           selectedNotes.includes(note)
-                            ? 'bg-[#D4AF37] text-black border-[#D4AF37] shadow-lg shadow-[#D4AF37]/20'
-                            : 'glass-card bg-black/40 text-gray-500 border-white/5 hover:border-[#D4AF37]/30'
+                            ? rating <= 3
+                              ? 'bg-red-500 text-white border-red-500 shadow-lg shadow-red-500/20'
+                              : 'bg-[#D4AF37] text-black border-[#D4AF37] shadow-lg shadow-[#D4AF37]/20'
+                            : 'glass-card bg-black/40 text-gray-400 border-white/10 hover:border-[#D4AF37]/30'
                         }`}
                       >
                         {note}

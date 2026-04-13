@@ -140,13 +140,23 @@ export function RideFlowScreen() {
       </div>
 
       {/* Map Area with Navigation Preview */}
-      <div className="flex-1 relative bg-gradient-to-b from-gray-900 to-black overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center opacity-40">
-          <div className="text-center animate-pulse-gold">
-            {config.icon}
-            <p className="text-[10px] font-black text-[#D4AF37] uppercase tracking-widest mt-4">Navigation Active</p>
-          </div>
-        </div>
+      <div className="flex-1 relative overflow-hidden">
+        {/* Real map via OpenStreetMap embed — oversized to hide attribution bar */}
+        <iframe
+          src="https://www.openstreetmap.org/export/embed.html?bbox=-74.0060%2C40.7128%2C-73.9857%2C40.7282&layer=mapnik"
+          className="absolute inset-0 w-full border-0"
+          style={{
+            height: 'calc(100% + 40px)',
+            top: '-0px',
+            filter: 'invert(90%) hue-rotate(180deg) brightness(0.85) contrast(1.1)',
+            pointerEvents: 'none'
+          }}
+          title="Navigation Map"
+          scrolling="no"
+        />
+
+        {/* Map overlay gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/50 pointer-events-none" />
 
         {/* Top Status Card with Lifecycle Stage */}
         <div className="absolute top-2 left-6 right-6 z-20">
@@ -207,7 +217,7 @@ export function RideFlowScreen() {
                       {status === 'navigate' ? '5 min away' : `${rideDetails.duration} remaining`}
                     </span>
                   </div>
-                  <span className="text-xs font-black text-[#D4AF37] uppercase italic">{status === 'navigate' ? '1.2 mi' : rideDetails.distance}</span>
+                  <span className="text-xs font-black text-white uppercase italic">{status === 'navigate' ? '1.2 mi' : rideDetails.distance}</span>
                 </GlassCard>
               </motion.div>
             )}
@@ -266,7 +276,7 @@ export function RideFlowScreen() {
               </div>
 
               <div className="flex items-center justify-between pt-5 border-t border-[#D4AF37]/20">
-                <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{rideDetails.distance} • {rideDetails.duration}</span>
+                <span className="text-[10px] font-black text-white uppercase tracking-widest">{rideDetails.distance} • {rideDetails.duration}</span>
                 <span className="text-2xl font-black text-[#D4AF37] italic tracking-tighter">
                   {status === 'complete' ? `$${rideDetails.fare.toFixed(2)}` : <>&nbsp;</>}
                 </span>
